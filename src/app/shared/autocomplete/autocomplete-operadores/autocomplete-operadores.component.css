@@ -1,0 +1,10 @@
+.autocomplete-container .input-container input {
+    font-size: 36px !important;
+    font-weight: normal !important;
+    height: 20px !important;
+    color: #454F63 !important;
+    text-transform: uppercase !important;
+    padding: 20 28px !important;
+    padding-top: 8px !important;
+    background-color: #fcfcfc;
+}

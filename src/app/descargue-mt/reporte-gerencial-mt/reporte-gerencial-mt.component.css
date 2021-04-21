@@ -1,0 +1,23 @@
+::ng-deep .mat-focused .mat-form-field-label {
+    /*placeholder de arriba*/
+    color: gray !important;
+}
+
+ ::ng-deep.mat-form-field-underline {
+    /*change color of underline*/
+    background-color: #ccc !important;
+    height: 9px;
+}
+
+ ::ng-deep.mat-form-field-ripple {
+    /*change color of underline when focused*/
+    background-color: #D4001B !important;
+}
+
+.mat-form-field.mat-form-field {
+    font-size: 14px;
+}
+
+.mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+    color: #D4001B !important;
+}

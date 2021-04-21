@@ -1,0 +1,262 @@
+<form [formGroup]="forma" (ngSubmit)="consultar()">
+    <div class="form-horizontal">
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <div class="col-sm-5 col-sm-5">
+                                <mat-form-field class="full-width">
+                                    <mat-label>Seleccione regional</mat-label>
+                                    <mat-select formControlName="drpRegionales" id="drpRegionales">
+                                        <mat-option>--Seleccione zona--</mat-option>
+                                        <mat-option *ngFor="let r of regionales" value="{{ r.Cod_Regional }}">{{ r.Nom_Regional }}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-5">
+                                <mat-form-field class="full-width">
+                                    <mat-label>Fecha</mat-label>
+                                    <input matInput [matDatepicker]="picker" formControlName="txtFechaIni">
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-2">
+                                <button mat-raised-button (click)="consultar()" color="primary" class="full-width">
+                                    <i class="fas fa-spinner fa-spin" *ngIf="cargando"></i>
+                                Consultar
+                            </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="form-horizontal" *ngIf="cargando">
+        <div class="form-group">
+            <div class="col-sm-12">
+                <app-loading mensaje="Consultando reporte" tipo="success"></app-loading>
+            </div>
+        </div>
+    </div> -->
+
+    <app-loading *ngIf="cargando"></app-loading>
+
+    <div class="form-horizontal" *ngIf="mostrar_info">
+        <div class="form-group">
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                <div class="bs-callout bs-callout-warning" style="background-color:#fff">
+
+                    <div class=" panel-heading">
+                        <div class="col-sm-10">
+                            Descargue
+                        </div>
+                        <div class="col-sm-2">
+                            <mat-icon style="color: 444;text-align: right;">local_shipping</mat-icon>
+                        </div>
+                    </div>
+                    <div class="panel-body" align="center" style="padding:4px">
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <h2>{{ total_descargadas * 100 / total_despachado | number:'1.0-2'}} %</h2>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="panel-footer" style="padding: 3px;" align="right">
+                        <small>Despachadas / Descargadas</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                <div class="bs-callout bs-callout-info" style="background-color:#fff">
+                    <div class=" panel-heading">
+                        <div class="col-sm-10">
+                            Entregas
+                        </div>
+                        <div class="col-sm-2">
+                            <mat-icon style="color: 444;text-align: right;">departure_board</mat-icon>
+                        </div>
+                    </div>
+                    <div class="panel-body" align="center" style="padding:4px">
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <h2>{{ total_entregadas * 100 / total_disponible | number:'1.0-2'}} %</h2>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="panel-footer" style="padding: 3px;" align="right">
+                        <small>Planilladas / Entregadas</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                <div class="bs-callout bs-callout-danger" style="background-color:#fff">
+                    <div class=" panel-heading">
+                        <div class="col-sm-10">
+                            Novedad reparto
+                        </div>
+                        <div class="col-sm-2">
+                            <mat-icon style="color: 444;text-align: right;">warning</mat-icon>
+                        </div>
+                    </div>
+                    <div class="panel-body" align="center" style="padding:4px">
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <h2>{{ total_nov_reparto * 100 / total_disponible | number:'1.0-2'}} %</h2>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="panel-footer" style="padding: 3px;" align="right">
+                        <small>Planilladas  / Novedad</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-horizontal" *ngIf="mostrar_info">
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <b>Descargue</b>
+                    </div>
+                    <div class="panel-body" style="overflow: scroll;">
+                        <table id="tblCola" name="tblCola" class="tabla tabla-hover table-bordered">
+                            <tr style="font-size:14px; font-weight: bold;" align="center">
+                                <td>Tipo</td>
+                                <td>Despachadas</td>
+                                <td>Descargadas</td>
+                                <td>Nov descargue</td>
+                                <td>Diferencia</td>
+                                <td>Nov solucionadas</td>
+                                <td>Disp reparto</td>
+
+                            </tr>
+                            <tr style="font-size:14px" align="center">
+                                <td><b>Urbano</b></td>
+                                <td>{{ reporte.UniUrb }}</td>
+                                <td>{{ reporte.UniDesUrb }}</td>
+                                <td>{{ reporte.UniDesUrbNov78 }}</td>
+                                <td>{{ reporte.UniUrb - reporte.UniDesUrb }}</td>
+                                <td>{{ reporte.UniNovNovSolUrb }}</td>
+                                <td>{{ total_disp_urbano }}</td>
+                            </tr>
+                            <tr style="font-size:14px" align="center">
+                                <td><b>Cadenas</b></td>
+                                <td>{{ reporte.UniCad }}</td>
+                                <td>{{ reporte.UniDesCad }}</td>
+                                <td>{{ reporte.UniDesCadNov78 }}</td>
+                                <td>{{ reporte.UniCad - reporte.UniDesCad }}</td>
+                                <td>{{ reporte.UniNovNovSolCad }}</td>
+                                <td>{{ total_disp_cadenas }} </td>
+                            </tr>
+                            <tr style="font-size:14px" align="center">
+                                <td><b>Domesticas</b></td>
+                                <td>{{ reporte.UniDom }}</td>
+                                <td>{{ reporte.UniDesDom }}</td>
+                                <td>{{ reporte.UniDesDomNov78 }}</td>
+                                <td>{{ reporte.UniUrb - reporte.UniDesUrb }}</td>
+                                <td>{{ reporte.UniNovNovSolDom }}</td>
+                                <td>{{ total_disp_domesticas }}</td>
+                            </tr>
+                            <tr style="font-size:14px" align="center">
+                                <td><b>Transitos</b></td>
+                                <td>{{ reporte.UniTran }}</td>
+                                <td>{{ reporte.UniDesTra }}</td>
+                                <td>{{ reporte.UniDesTraNov78 }}</td>
+
+                                <td>{{ reporte.UniTran - reporte.UniDesTra }}</td>
+                                <td>{{ reporte.UniNovNovSolTra }}</td>
+                                <td>0</td>
+                            </tr>
+                            <tr align="center" style="font-weight: bold;">
+                                <td><b>Totales</b></td>
+                                <td>{{ total_despachado }}</td>
+                                <td>{{ total_descargadas }}</td>
+                                <td>{{ total_nov_descargue }}</td>
+                                <td>{{ total_despachado - total_descargadas}}</td>
+                                <td>{{ total_nov_solucionadas }}</td>
+                                <td>{{ total_disponible }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-horizontal" *ngIf="mostrar_info">
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Reparto
+                    </div>
+                    <div class="panel-body" style="overflow: scroll;">
+                        <table id="tblCola" name="tblCola" class="tabla tabla-hover table-bordered" style="width:100%;overflow: scroll;">
+                            <tr style="font-size:14px; font-weight: bold;" align="center">
+                                <td>Tipo</td>
+                                <td>Disp reparto</td>
+                                <td>Entregadas</td>
+                                <td>En reparto</td>
+                                <td>Nov reparto</td>
+                                <td>Muelle</td>
+                                <td>En van estacionario</td>
+                                <td>Otros estados</td>
+
+                            </tr>
+                            <tr style="font-size:14px" align="center">
+                                <td><b>Urbano</b></td>
+                                <td>{{ total_disp_urbano }}</td>
+                                <td>{{ reporte.UniEntregadasUrb + reporte.UniEntNovSolUrb }}</td>
+                                <td>{{ reporte.UniRepartoUrb + reporte.UniRepNovSolUrb }}</td>
+                                <td>{{ reporte.NovedadUrbano }}</td>
+                                <td>{{ reporte.MuelleUrb }}</td>
+                                <td>{{ reporte.VanUrb }}</td>
+                                <td>{{ reporte.UniOEUrb }}</td>
+                            </tr>
+                            <tr style="font-size:14px" align="center">
+                                <td><b>Cadenas</b></td>
+                                <td>{{ total_disp_cadenas }}</td>
+                                <td>{{ reporte.UniEntregadasCad + reporte.UniEntNovSolCad }}</td>
+                                <td>{{ reporte.UniRepartoCad + reporte.UniRepNovSolCad }}</td>
+                                <td>{{ reporte.NovedadCadena }}</td>
+                                <td>{{ reporte.MuelleCad }}</td>
+                                <td>{{ reporte.VanCad }}</td>
+                                <td>{{ reporte.UniOECad }}</td>
+                            </tr>
+                            <tr style="font-size:14px" align="center">
+                                <td><b>Domesticas</b></td>
+                                <td>{{ total_disp_domesticas }}</td>
+                                <td>{{ reporte.UniEntregadasDom + reporte.UniEntNovSolDom }}</td>
+                                <td>{{ reporte.UniRepartoDom + reporte.UniRepNovSolDom }}</td>
+                                <td>{{ reporte.NovedadDomesticas }}</td>
+                                <td>{{ reporte.MuelleDom }}</td>
+                                <td>{{ reporte.VanDom }}</td>
+                                <td>{{ reporte.UniOEDom }}</td>
+                            </tr>
+                            <tr align="center" style="font-weight: bold;">
+                                <td><b>Totales</b></td>
+                                <td>{{ total_disponible }}</td>
+                                <td>{{ total_entregadas }}</td>
+                                <td>{{ total_reparto }}</td>
+                                <td>{{ total_nov_reparto }}</td>
+                                <td>{{ total_muelle}}</td>
+                                <td>{{ total_van }}</td>
+                                <td>{{ total_oe }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

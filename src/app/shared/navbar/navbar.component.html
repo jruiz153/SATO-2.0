@@ -1,0 +1,23 @@
+<!-- <mat-toolbar *ngIf="tools.estado_navbar" style="border-bottom: 1px solid #ddd;">
+    <button mat-icon-button>
+        <mat-icon mat-icon-button (click)="onabrirPanelDerecha()">search</mat-icon>
+    </button>
+    <div class="row" style="padding-left:15px">
+        <span class="navbar-brand">{{ tools.titulo_opcion | uppercase }}</span>
+    </div>
+    <span class="example-spacer"></span>
+    <span class="navbar-brand navbar-right" style="font-size:13px">
+        Jaime Andres Ruiz Parra
+    </span> 
+</mat-toolbar> -->
+
+<mat-toolbar *ngIf="tools.estado_navbar" style="border-bottom: 1px solid #ddd;">
+    <button mat-icon-button>
+        <mat-icon mat-icon-button (click)="onabrirPanelDerecha()">search</mat-icon>
+    </button>
+    <span style="font-size: 16px;">{{ tools.titulo_opcion | uppercase }}</span>
+    <span class="example-spacer"></span>
+    <span class="navbar-brand navbar-right" style="font-size:12px">
+        {{ auth.nom_empleado }} <a (click)='logout()' style="cursor: pointer;">Salir </a>
+    </span>
+</mat-toolbar>
