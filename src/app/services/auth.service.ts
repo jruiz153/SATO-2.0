@@ -57,8 +57,7 @@ export class AuthService {
 
   login(gtoken: string, data: any, recordar: boolean = false) {
     //recordar ? localStorage.setItem('email', user.tx_email) : localStorage.removeItem('email');
- 
-     return this.http.post(`${ this.url }user/login/`, data).pipe(map((resp: any) => {
+      return this.http.post(`${ this.url }user/login/`, data).pipe(map((resp: any) => {
 
       if(resp.Cod_Empleado != 0){
         localStorage.setItem('token', JSON.stringify(resp.Token));

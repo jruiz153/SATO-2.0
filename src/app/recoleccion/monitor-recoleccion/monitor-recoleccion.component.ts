@@ -8,6 +8,7 @@ import { SatoService } from '../../services/sato.service';
 import { OS } from '../../interfaces/os.interface';
 import { AuthService } from '../../services/auth.service';
 import { RecoleccionService } from 'src/app/services/recoleccion.service';
+import { PlanillaRecoleccion } from '../../interfaces/planilla-recoleccion.interface';
 
 @Component({
   selector: 'app-monitor-recoleccion',
@@ -24,8 +25,8 @@ export class MonitorRecoleccionComponent implements OnInit {
   planilla:number=0;
 
   zonas:any=[];
-  planillas:any=[];
-  oss:any=[];
+  planillas:PlanillaRecoleccion[]=[];
+  oss:OS[]=[];
   cuentas:any=[];
   resumen:any=[];
   os:OS;
@@ -49,13 +50,25 @@ export class MonitorRecoleccionComponent implements OnInit {
               private satoS:SatoService,
               private recoleccionS: RecoleccionService,
               private authS:AuthService) {
+              
+              this.construirFormulario();
+    
+   }
 
+  ngOnInit(): void {
+    this.cod_regional = this.authS.cod_regional;
+    this.tools.mostrarNavbar();
+    this.tools.asignarTituloOpcion('Monitor de recolección');
+    this.consultarZonas();
+    //this.consultarOSsPlanilla(this.authS.cod_regional,0);
+  }
+
+  construirFormulario(){
     this.forma = this.fb.group({
       txtPlanilla: [''],
       txtFecha: ['', Validators.required],
       drpEmbalaje: ['', Validators.required],
       drpCCs: ['', Validators.required],
-
       drpTipo: ['', Validators.required],
       drpZona: [''],
       drpOperador: [''],
@@ -65,16 +78,9 @@ export class MonitorRecoleccionComponent implements OnInit {
       drpCuentas: [''],
       chkClientesCelulares: [''],
       chkAccion: [''],
+      drpAccion: ['']
      
     })
-   }
-
-  ngOnInit(): void {
-    this.cod_regional = this.authS.cod_regional;
-    this.tools.mostrarNavbar();
-    this.tools.asignarTituloOpcion('Monitor de recolección');
-    this.consultarZonas();
-    //this.consultarOSsPlanilla(this.authS.cod_regional,0);
   }
 
   consultarZonas(){
@@ -107,8 +113,7 @@ export class MonitorRecoleccionComponent implements OnInit {
     })
   }
 
-  consultarPlanilla(planilla: any, index: number){
-    //resumen planillas de recoleccion
+  consultarPlanilla(planilla: PlanillaRecoleccion, index: number){
     this.planilla=planilla.Num_PlanillaR;
     this.registro_activo = index;
     this.os_activo = -1;
@@ -144,13 +149,19 @@ export class MonitorRecoleccionComponent implements OnInit {
       EstadoOrdenS:'',
     }
 
-    this.cargandoPlanillas = true;
+    this.cargandoOSs = true;
     this.recoleccionS.consultarOSsPlanillaRecoleccionMonitor(data_planilla).subscribe(res=>{
       this.oss = res;
-      this.cargandoPlanillas = false;
+      this.cargandoOSs = false;
+      
+      if(this.oss.length === 0){
+        this.tools.mensaje_error('No hay ordenes de servicio asignadas a la planilla ' + planilla);
+      }
+
     },
     err => {
       this.tools.mensaje_error('Error cargando OSs');
+      this.cargandoOSs = false;
     }
     )
   }
@@ -163,6 +174,4 @@ export class MonitorRecoleccionComponent implements OnInit {
   asignarOSPlanilla(planilla:number){
     this.tools.mensaje_ok("Orden se servicio asignada");
   }
-
-
 }

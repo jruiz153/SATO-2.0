@@ -8,10 +8,15 @@ import { MaterialModule } from '../modules/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { RecoleccionRoutingModule } from './recoleccion-routing.module';
+import { ChartsModule } from 'ng2-charts';
 
 
 @NgModule({
-  declarations: [CrearPlanillaRecoleccionComponent, MonitorRecoleccionComponent, ControlRecoleccionComponent, CrearOrdenServicioComponent],
+  declarations: [
+    CrearPlanillaRecoleccionComponent, 
+    MonitorRecoleccionComponent, 
+    ControlRecoleccionComponent, 
+    CrearOrdenServicioComponent],
   imports: [
     CommonModule,
     MaterialModule,
@@ -19,6 +24,7 @@ import { RecoleccionRoutingModule } from './recoleccion-routing.module';
     ReactiveFormsModule,
     SharedModule,
     RecoleccionRoutingModule,
+    ChartsModule
   ],
   exports:[
     CrearPlanillaRecoleccionComponent, 

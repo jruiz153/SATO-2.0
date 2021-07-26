@@ -20,7 +20,7 @@
                     <!--  -->
                     <div *ngFor="let opc of sub.Opciones" routerLink="/{{opc.Link}}" (click)="onToggleSidenav(opc.Nom_Programa, opc.Link)" routerLinkActive="activo" style="padding-left: 30px">
                         <span class="fa fa-chevron-right sidenav-subitems-icon" style="font-size:12pt;"></span> &nbsp;
-                        <span class="sidenav-subitems-text">{{ opc.Nom_Opcion}} </span>
+                        <span class="sidenav-subitems-text">{{ opc.Nom_Opcion }}</span>
                     </div>
                 </div>
             </mat-accordion>

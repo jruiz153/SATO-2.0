@@ -5,7 +5,15 @@ import { CapturarGuiaComponent } from './capturar-guia/capturar-guia.component';
 
 
 const routes: Routes = [
-    { path: 'capturar-guia', component: CapturarGuiaComponent },
+    { 
+      path: '',
+      children:
+      [
+        {path: 'capturar-guia', component: CapturarGuiaComponent}
+      ]
+       
+    
+    },
 ];
 
 @NgModule({

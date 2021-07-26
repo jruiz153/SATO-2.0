@@ -36,7 +36,7 @@
                                     <mat-label>Tipo planilla</mat-label>
                                     <mat-select formControlName="drpTipo" id="drpTipo" (selectionChange)="consultarParametrosTipo()">
                                         <mat-option>--Seleccione--</mat-option>
-                                        <mat-option value="PROPIOS"><i class="fas fa-user"></i> &nbsp; PROPIOS</mat-option>
+                                        <mat-option value="envia"><i class="fas fa-user"></i> &nbsp; PROPIOS</mat-option>
                                         <mat-option value="RX"><i class="fas fa-user"></i> &nbsp; REEXPEDIDORES</mat-option>
                                         <mat-option value="CO"><i class="fas fa-user"></i> &nbsp; CONTRATISTAS B</mat-option>
                                         <mat-option value="TERCEROS"><i class="fas fa-user"></i> &nbsp; TERCEROS</mat-option>
@@ -63,151 +63,334 @@
         </div>
         <app-loading *ngIf="cargando"></app-loading>
     </div>
+
     <!-- panel propios -->
-    <div class="form-horizontal" *ngIf="(forma.controls.drpTipo.value=='PROPIOS')">
+    <div class="form-horizontal" *ngIf="(forma.controls.drpTipo.value=='envia')">
         <div class="form-group">
-            <div class="col-sm-12">
-                <div class="panel panel-info">
+            <!-- Datos ruta -->
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <div class="panel panel-default">
                     <div class="panel-heading">
-                        Propio
+                        <i class="fas fa-truck"></i> Datos ruta <i><b style="color:#bf0000">envía</b></i>
                     </div>
                     <div class="panel-body text-center">
-
                         <div class="form-group">
-                            <div class="col-sm-2">
-                                <mat-form-field class="full-width">
-                                    <input type="txtCodigoOperador" formControlName="txtCodigoOperador" matInput placeholder="Codigo" (change)="buscarCodigo()">
-                                </mat-form-field>
-                            </div>
+                            <label class="col-sm-2 control-label">Macrozona:</label>
+                            <label class="col-sm-4 control-label" style="text-align: left;"><b>{{ cod_macrozona }} - {{ nom_macrozona }}</b></label>
+                            <label class="col-sm-2 control-label">Zona L.:</label>
+                            <label class="col-sm-4 control-label" style="text-align: left;"><b>{{ cod_zonal }} - {{ nom_zonal }}</b></label>
+                        </div>
+                        <div class="form-group">
+                            <mat-form-field>
+                                <mat-label>Frente</mat-label>
+                                <mat-select formControlName="drpFrente" id="drpFrente">
+                                    <mat-option>--Seleccione frente--</mat-option>
+                                    <mat-option *ngFor="let f of frentes" [value]="f.Cod_Turno">{{ f.Des_Turno}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <!-- <label class="col-sm-2 control-label">Frente:</label>
                             <div class="col-sm-4">
-                                <mat-form-field class="full-width">
-                                    <mat-label>Seleccione operador</mat-label>
-                                    <mat-select formControlName="drpOperador" id="drpEmbalaje">
-                                        <mat-option>--Seleccione operador--</mat-option>
-                                        <mat-option *ngFor="let o of operadores" value="{{ o.Codigo }}">{{ o.Nom_Empleado }}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
+                                <select id="drpFrente" formControlName="drpFrente">
+                                    <option value="" selected="selected">--Seleccione frente--</option>
+                                    <option *ngFor="let f of frentes" value="{{ f.Cod_Turno }}">{{ f.Des_Turno }}</option>
+                                </select>
+                            </div> -->
+                            <label class="col-sm-2 control-label">Cuadrilla:</label>
+                            <div class="col-sm-4">
+                                <input type="number" formControlName="txtCuadrilla" id="txtCuadrilla" placeholder="Cuadrilla">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Placa:</label>
+                            <div class="col-sm-3">
+                                <input #myPlacaenvia type="text" formControlName="txtPlacaenvia" id="txtPlacaenvia" (change)="consultarVehiculoenvia()" placeholder="">
+                            </div>
+                            <label class="col-sm-7 control-label" style="text-align: left;">Tipo: <b>{{ tipo_vehiculo }} {{ van }}</b></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Operadores - conductor envia-->
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fas fa-users"></i> Tripulación <i><b style="color:#bf0000">envía</b></i>
+                    </div>
+                    <div class="panel-body text-center">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Conductor:</label>
+                            <div class="col-sm-3">
+                                <input type="text" formControlName="txtCodigoConductorenvia" id="txtCodigoConductorenvia" (change)="buscarCodigoConductorenvia()" placeholder="Codigo">
+                            </div>
+                            <div class="col-sm-7">
+                                <select id="drpConductorenvia" formControlName="drpConductorenvia">
+                                    <option value="" selected="selected ">--Seleccione conductor--</option>
+                                    <option *ngFor="let o of conductores" value="{{ o.Codigo }}">{{ o.Nom_Empleado }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <label class="col-sm-2 control-label ">Operadores:</label>
+                            <div class="col-sm-3 ">
+                                <input type="text " formControlName="txtCodigoOperador" id="txtCodigoOperador" (change)="buscarCodigoOperadorenvia()" placeholder="Codigo">
+                            </div>
+                            <div class="col-sm-5">
+                                <select id="drpOperadorenvia" formControlName="drpOperadorenvia" (change)="getEmpleado($event)">
+                                    <option value="" selected="selected">--Seleccione operador--</option>
+                                    <option *ngFor="let o of operadores" value="{{ o.Codigo }}">{{ o.Nom_Empleado }}</option>
+                                </select>
                             </div>
                             <div class="col-sm-2">
-                                <mat-form-field class="full-width">
-                                    <input type="txtCodigoOperador" formControlName="txtCodigoOperador" matInput placeholder="Codigo" (change)="buscarCodigo()">
-                                </mat-form-field>
-                            </div>
-                            <div class="col-sm-4">
-                                <mat-form-field class="full-width">
-                                    <mat-label>Seleccione operador</mat-label>
-                                    <mat-select formControlName="drpOperador" id="drpEmbalaje">
-                                        <mat-option>--Seleccione operador--</mat-option>
-                                        <mat-option *ngFor="let o of operadores" value="{{ o.Codigo }}">{{ o.Nom_Empleado }}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
+                                <input type="button " value="+" class="btn btn-primary input-field" (click)="adicionarOperador() ">
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <div class="col-sm-2">
-                                <mat-form-field class="full-width">
-                                    <input type="txtCodigoOperador" formControlName="txtCodigoOperador" matInput placeholder="Codigo" (change)="buscarCodigo()">
-                                </mat-form-field>
+                        <div class="form-group ">
+                            <div class="col-sm-12 ">
+                                <table class="tabla tabla-bordered " style="width:100% ">
+                                    <tr>
+                                        <td width="20% ">Codigo</td>
+                                        <td width="75% ">Operador</td>
+                                        <td width="5% "></td>
+                                    </tr>
+                                    <tr *ngFor="let operador of array_operadores; let i=i ndex ">
+                                        <td>{{ operador.Codigo }}</td>
+                                        <td>{{ operador.Nom_Empleado }}</td>
+                                        <td (click)="eliminarOperador(i) "><a><i class="fa fa-trash " style="padding:0px "></i></a></td>
+                                    </tr>
+                                </table>
                             </div>
-                            <div class="col-sm-4">
-                                <mat-form-field class="full-width">
-                                    <mat-label>Seleccione operador</mat-label>
-                                    <mat-select formControlName="drpOperador" id="drpEmbalaje">
-                                        <mat-option>--Seleccione operador--</mat-option>
-                                        <mat-option *ngFor="let o of operadores" value="{{ o.Codigo }}">{{ o.Nom_Empleado }}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-sm-2">
-                                <mat-form-field class="full-width">
-                                    <input type="txtCodigoOperador" formControlName="txtCodigoOperador" matInput placeholder="Codigo">
-                                </mat-form-field>
-                            </div>
-                            <div class="col-sm-4">
-                                <mat-form-field class="full-width">
-                                    <mat-label>Seleccione operador</mat-label>
-                                    <mat-select formControlName="drpOperador" id="drpEmbalaje">
-                                        <mat-option>--Seleccione operador--</mat-option>
-                                        <mat-option *ngFor="let o of operadores" value="{{ o.Codigo }}">{{ o.Nom_Empleado }}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                        </div>
 
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <!-- panel rx -->
-    <div class="form-horizontal" *ngIf="(forma.controls.drpTipo.value=='RX')">
-        <div class="form-group">
-            <div class="col-sm-12">
-                <div class="panel panel-danger">
-                    <div class="panel-heading">
-                        Reexpedidor
-                    </div>
-                    <div class="panel-body text-center">
-                        Soy Reexpedidor
+    <div class="form-horizontal " *ngIf="(forma.controls.drpTipo.value=='RX') ">
+        <div class="form-group ">
+            <div class="col-sm-12 ">
 
+                <div class="form-group ">
+                    <!-- Datos ruta -->
+                    <div class="col-sm-12 col-md-6 col-lg-6 ">
+                        <div class="panel panel-default ">
+                            <div class="panel-heading ">
+                                <i class="fas fa-truck "></i> Datos ruta Reexpedidores
+                            </div>
+                            <div class="panel-body text-center ">
+                                <div class="form-group ">
+                                    <label class="col-sm-3 control-label ">Reexpedidor:</label>
+                                    <div class="col-sm-9 ">
+                                        <select id="drpReexpedidores" formControlName="drpReexpedidores" (change)="tiposLiquidacionRX()">
+                                            <option value="" selected="selected">--Seleccione--</option>
+                                            <option *ngFor="let r of reexpedidores " value="{{ r.Cod_Reexpedidor }} ">{{ r.Nom_Reexpedidor }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label class="col-sm-3 control-label ">Liquidación:</label>
+                                    <div class="col-sm-9 ">
+                                        <select id="drpTipoLiquidacionRX" formControlName="drpTipoLiquidacionRX">
+                                            <option value="" selected="selected">--Seleccione--</option>
+                                            <option *ngFor="let t of tipos_rx" value="{{ t.Cod_Tipo }} ">{{ t.Des_Tipo }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Operadores - conductor -->
+                    <div class="col-sm-12 col-md-6 col-lg-6 ">
+                        <div class="panel panel-default ">
+                            <div class="panel-heading ">
+                                <i class="fas fa-users "></i> Tripulación
+                            </div>
+                            <div class="panel-body text-center ">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label ">Conductor:</label>
+                                    <div class="col-sm-3 ">
+                                        <input type="text" formControlName="txtCodigoConductorRX" id="txtCodigoConductorRX" (change)="buscarCodigo() " placeholder="Codigo ">
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <select id="drpConductorRX" formControlName="drpConductorRX">
+                                            <option value="" selected="selected">--Seleccione conductor--</option>
+                                            <option *ngFor="let o of conductores" value="{{ o.Codigo }} ">{{ o.Nom_Empleado }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Operador:</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" formControlName="txtCodigoOperadorRX" id="txtCodigoOperadorRX" (change)="buscarCodigo() " placeholder="Codigo ">
+                                    </div>
+                                    <div class="col-sm-7 ">
+                                        <select id="drpOperadorRX" formControlName="drpOperadorRX">
+                                            <option value="" selected="selected">--Seleccione operador--</option>
+                                            <option *ngFor="let o of operadores " value="{{ o.Codigo }} ">{{ o.Nom_Empleado }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <!-- panel contratistas -->
-    <div class="form-horizontal" *ngIf="(forma.controls.drpTipo.value=='CO')">
-        <div class="form-group">
-            <div class="col-sm-12">
-                <div class="panel panel-warning">
-                    <div class="panel-heading">
-                        Contratista B
-                    </div>
-                    <div class="panel-body text-center">
-                        <div class="form-group">
-                            <div class="col-sm-4">
-                                <mat-form-field class="full-width" disabled>
-                                    <mat-label>Contratista</mat-label>
-                                    <mat-select formControlName="drpContratistas" id="drpContratistas" (selectionChange)="consultarTiposLiquidacionContratistas()">
-                                        <mat-option>--Seleccione contratista--</mat-option>
-                                        <mat-option *ngFor="let c of contratistas" value="{{ c.Cod_Oficina }}"><i class="fas fa-truck"></i> &nbsp;{{ c.Nom_Oficina }}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
+    <div class="form-horizontal " *ngIf="(forma.controls.drpTipo.value=='CO' ) ">
+        <div class="form-group ">
+            <div class="col-sm-12 ">
+                <div class="form-group ">
+                    <!-- Datos ruta -->
+                    <div class="col-sm-12 col-md-6 col-lg-6 ">
+                        <div class="panel panel-default ">
+                            <div class="panel-heading">
+                                <i class="fas fa-truck"></i> Datos ruta Contratista
                             </div>
-                            <div class="col-sm-2">
-                                <mat-form-field class="full-width">
-                                    <mat-label>Tipo liquidacion</mat-label>
-                                    <mat-select formControlName="drpTiposLiquidacionB" id="drpTiposLiquidacionB">
-                                        <mat-option>--Seleccione contratista--</mat-option>
-                                        <mat-option *ngFor="let t of tipos_liquidacion" value="{{ t.Cod_Tipo }}"><i class="fas fa-calculator"></i> &nbsp;{{ t.Des_Tipo }}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
+                            <div class="panel-body text-center">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Contratista:</label>
+                                    <div class="col-sm-9">
+                                        <select id="drpContratistas" formControlName="drpContratistas" (change)="tiposLiquidacionContratistas()">
+                                            <option value="" selected="selected">--Seleccione--</option>
+                                            <option *ngFor="let c of contratistas" value="{{ c.Cod_Oficina }} ">{{ c.Nom_Oficina }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Liquidación:</label>
+                                    <div class="col-sm-9">
+                                        <select id="drpTipoLiquidacionContratista" formControlName="drpTipoLiquidacionContratista">
+                                           <!--  <option value=" ">--Seleccione--</option> -->
+                                            <option *ngFor="let t of tipos_contratista" value="{{ t.Cod_Tipo }} ">{{ t.Des_Tipo }}</option>
+                                        </select>
 
-                            <div class="col-sm-2">
-                                <mat-form-field class="full-width">
-                                    <input type="txtCodigoOperador" formControlName="txtCodigoOperador" matInput placeholder="Placa">
-                                </mat-form-field>
+                                        <div *ngFor="let t of tipos_contratista">
+                                            {{ t.Cod_Tipo }} <br>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
+                    </div>
+                    <!-- Operadores - conductor -->
+                    <div class="col-sm-12 col-md-6 col-lg-6 ">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <i class="fas fa-users"></i> Tripulación
+                            </div>
+                            <div class="panel-body text-center">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Conductor:</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" formControlName="txtCodigoConductorRX" id="txtCodigoConductorRX" (change)="buscarCodigo()" placeholder="Codigo">
+                                    </div>
+                                    <div class="col-sm-7 ">
+                                        <select id="drpConductorRX" formControlName="drpConductorRX">
+                                            <option value="" selected="selected">--Seleccione conductor--</option>
+                                            <option *ngFor="let o of operadores" value="{{ o.Codigo }} ">{{ o.Nom_Empleado }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label ">Operador:</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" formControlName="txtCodigoOperadorRX" id="txtCodigoOperadorRX" (change)="buscarCodigo()" placeholder="Codigo">
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <select id="drpOperadorRX" formControlName="drpOperadorRX">
+                                            <option value="" selected="selected">--Seleccione operador--</option>
+                                            <option *ngFor="let o of operadores" value="{{ o.Codigo }} ">{{ o.Nom_Empleado }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <!-- panel terceros -->
-    <div class="form-horizontal" *ngIf="(forma.controls.drpTipo.value=='TERCEROS')">
-        <div class="form-group">
-            <div class="col-sm-12">
-                <div class="panel panel-success">
-                    <div class="panel-heading">
-                        Tercero
+    <div class="form-horizontal " *ngIf="(forma.controls.drpTipo.value=='TERCEROS' ) ">
+        <div class="form-group ">
+            <div class="col-sm-12 ">
+                <div class="form-group ">
+                    <!-- Datos ruta -->
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <i class="fas fa-truck "></i> Datos ruta Tercero
+                            </div>
+                            <div class="panel-body text-center">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label ">Tercero:</label>
+                                    <div class="col-sm-9 ">
+                                        <select id="drpTerceros" formControlName="drpTerceros" (change)="consultarTercero()">
+                                            <option value="" selected="selected">--Seleccione--</option>
+                                            <option *ngFor="let c of terceros" value="{{ c.Cod_Tercero }} ">{{ c.Nom_Tercero }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label class="col-sm-3 control-label ">Ruta:</label>
+                                    <div class="col-sm-9">
+                                        <select id="drpRutasTercero" formControlName="drpRutasTercero">
+                                            <option value="" selected="selected">--Seleccione ruta--</option>
+                                            <option *ngFor="let ruta of rutas" value="{{ ruta.Cod_Ruta }} ">{{ ruta.Nom_Ruta }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label class="col-sm-3 control-label ">Vehiculo:</label>
+                                    <div class="col-sm-3 ">
+                                        <select id="drpVehiculosTercero" formControlName="drpVehiculosTercero">
+                                            <option value="" selected="selected">--Seleccione placa--</option>
+                                            <option *ngFor="let v of vehiculos_terceros " value="{{ v.Cod_Placa }} ">{{ v.Nro_Placa }}</option>
+                                        </select>
+                                    </div>
+                                    <label class="col-sm-3 control-label">Tip. Liq.:</label>
+                                    <div class="col-sm-3 ">
+                                        <select id="drpTipoLiquidacionTercero" formControlName="drpTipoLiquidacionTercero">
+                                            <option value="" selected="selected">--Seleccione--</option>
+                                            <option *ngFor="let t of tipos_tercero " value="{{ t.Cod_Tipo }} ">{{ t.Des_Tipo }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="panel-body text-center">
-                        Soy Tercero
-
+                    <!-- Operadores - conductor -->
+                    <div class="col-sm-12 col-md-6 col-lg-6 ">
+                        <div class="panel panel-default ">
+                            <div class="panel-heading ">
+                                <i class="fas fa-users "></i> Tripulación
+                            </div>
+                            <div class="panel-body text-center ">
+                                <div class="form-group ">
+                                    <label class="col-sm-3 control-label ">Conductor:</label>
+                                    <div class="col-sm-9 ">
+                                        <select id="drpConductorTercero" formControlName="drpConductorTercero">
+                                            <option value=" " selected="selected ">--Seleccione conductor--</option>
+                                            <option *ngFor="let c of conductores_terceros " value="{{ c.Cod_Conductor }} ">{{ c.Nom_Conductor }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label class="col-sm-3 control-label ">Conductor TX:</label>
+                                    <div class="col-sm-9 ">
+                                        <select id="drpConductorTerceroTX" formControlName="drpConductorTerceroTX">
+                                            <option value="" selected="selected ">--Seleccione operador--</option>
+                                            <option *ngFor="let o of conductores " value="{{ o.Codigo }} ">{{ o.Nom_Empleado }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -20,6 +20,7 @@ export class NavbarComponent implements OnInit {
   onabrirPanelDerecha(): void{
     this.tools.cambiarPosicionMenu('end')
     this.toggleSidenav.emit();
+    console.log('fsfsf')
   }
 
   logout(){

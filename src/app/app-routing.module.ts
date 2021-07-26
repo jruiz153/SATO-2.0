@@ -7,6 +7,7 @@ import { AdminModule } from './admin/admin.module';
 import { RepartoModule } from './reparto/reparto.module';
 
 const routes: Routes = [
+  //{ path: '**', pathMatch: 'full', redirectTo: 'login' },
   { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
   { path: 'admin', loadChildren: () => import(`./admin/admin.module`).then(m => m.AdminModule) },
@@ -18,7 +19,7 @@ const routes: Routes = [
   { path: 'vehiculos', loadChildren: () => import(`./vehiculos/vehiculos.module`).then(m => m.VehiculosModule) },
   { path: 'results/:id', component: ResultsComponent },
   { path: 'inicio', component: InicioComponent },
-  /* { path: '**', pathMatch: 'full', redirectTo: 'login' }, */
+  /*  */
  ];
 
 @NgModule({

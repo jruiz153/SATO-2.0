@@ -17,6 +17,7 @@ import { GuiaModule } from './guia/guia.module';
 import { ControlCargueModule } from './control-cargue/control-cargue.module';
 import { RepartoModule } from './reparto/reparto.module';
 import { RecoleccionModule } from './recoleccion/recoleccion.module';
+import { ChartsModule } from 'ng2-charts';
 
 import { LoginComponent } from './auth/login/login.component';
 import { ToolsService } from './services/tools.service';
@@ -43,11 +44,12 @@ import { RecoleccionService } from './services/recoleccion.service';
     ReactiveFormsModule,
     AutocompleteLibModule,
     VehiculosModule,
-    AdminModule,
-    GuiaModule,
-    ControlCargueModule,
-    RepartoModule,
-    RecoleccionModule,
+    AdminModule, //ojo si sale error es porque este modulo ya es cargado desde el loadchildren de rounting.module.ts, se debe quitar de aca
+    GuiaModule, //ojo si sale error es porque este modulo ya es cargado desde el loadchildren de rounting.module.ts, se debe quitar de aca
+    ControlCargueModule, //ojo si sale error es porque este modulo ya es cargado desde el loadchildren de rounting.module.ts, se debe quitar de aca
+    //RepartoModule,
+    //RecoleccionModule,
+    ChartsModule
   ],
   providers: [ToolsService,UserService,RepartoService,RecoleccionService, { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }],
   bootstrap: [AppComponent]

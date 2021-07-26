@@ -8,7 +8,6 @@ import { environment } from '../../environments/environment';
   })
   export class UserService {
     private url = environment.url; //api del programa
-    private url_envia = environment.url_envia; //api transversal envia
     acciones_s: any=[];
     valor ="";
     opcion = "";

@@ -8,6 +8,7 @@ import { RepartoService } from '../../services/reparto.service';
 import { SatoService } from '../../services/sato.service';
 import { Observable } from 'rxjs';
 import { MatAutocomplete } from '@angular/material/autocomplete';
+import { CC } from 'src/app/interfaces/cc.interface';
 
 @Component({
   selector: 'app-crear-control-cargue',
@@ -34,6 +35,7 @@ export class CrearControlCargueComponent implements OnInit {
   estado = '';
   cod_operador:number;
   selected = 0;
+  fecha = '';
     
   opcion_activa = "";
   mensaje_error: string = "";
@@ -58,9 +60,25 @@ export class CrearControlCargueComponent implements OnInit {
   /*retornos*/
   validacion_guia: any;
 
-  constructor(private fb: FormBuilder, public tools: ToolsService, public userS: UserService, 
-              private authS:AuthService, private repartoS: RepartoService, private satoS: SatoService) {
+  constructor(private fb: FormBuilder, 
+              public tools: ToolsService, 
+              public userS: UserService, 
+              private authS:AuthService, 
+              private repartoS: RepartoService, 
+              private satoS: SatoService) {
+      this.construirFormulario();
+   }
 
+  ngOnInit(): void {
+    this.opcion_activa = localStorage.getItem('opcion_activa');
+    this.cod_regional=this.authS.cod_regional;
+    this.tools.mostrarNavbar();
+    this.tools.asignarTituloOpcion('Crear control cargue');
+    this.cargarPermisos();
+    this.fecha = this.authS.fecha_sistema;
+  }
+
+  construirFormulario(){
     this.forma = this.fb.group({
       txtControlCargue: [''],
       txtCodigoRuta: [''],
@@ -74,14 +92,6 @@ export class CrearControlCargueComponent implements OnInit {
       txtConsSalida: [''],
       txtNuevoControlCargue: [''],
     })
-   }
-
-  ngOnInit(): void {
-    this.opcion_activa = localStorage.getItem('opcion_activa');
-    this.cod_regional=this.authS.cod_regional;
-    this.tools.mostrarNavbar();
-    this.tools.asignarTituloOpcion('Crear control cargue');
-    this.cargarPermisos();
   }
 
   cargarPermisos(){
@@ -95,7 +105,6 @@ export class CrearControlCargueComponent implements OnInit {
       let newObj = this.permisos.filter((value)=>{
           return value.Nom_Accion.indexOf("CONSULTAR") != -1 ? value : null
       });
-      console.log(newObj)
     })
   }
   consultarCC(){
@@ -139,7 +148,7 @@ export class CrearControlCargueComponent implements OnInit {
       else{
         this.bloqueo_anular = true;
         this.forma.reset();
-        this.tools.mensaje_error("CC no existe")
+        this.tools.mensaje_error("CC no existe");
         this.error = true;
         this.mensaje_error="Control de cargue no existe!"
         this.cargando = false;
@@ -156,7 +165,7 @@ export class CrearControlCargueComponent implements OnInit {
         Num_ControlC: cc
       }
       
-      this.repartoS.consultarControlCargue(data).subscribe((res:any)=>{
+      this.repartoS.consultarControlCargue(data).subscribe((res:CC)=>{
         resolve(res);
       })
     }); 
@@ -243,17 +252,17 @@ export class CrearControlCargueComponent implements OnInit {
 
   adicionarGuia(){
     const data={
-      Cod_RegionalP:this.cod_regional,
-      Fec_Proceso:'15/04/2021',
-      Cod_Regional:this.forma.controls.txtCodRegional.value,
-      Cod_FormaPago:this.forma.controls.txtCodFormaPago.value,
-      Cons_GuiasU:this.forma.controls.txtConsGuiasU.value,
+      Cod_RegionalP: this.cod_regional,
+      Fec_Proceso: this.fecha,
+      Cod_Regional: this.forma.controls.txtCodRegional.value,
+      Cod_FormaPago: this.forma.controls.txtCodFormaPago.value,
+      Cons_GuiasU: this.forma.controls.txtConsGuiasU.value,
     }
 
-    this.cargando_guia = true;
+    //this.cargando_guia = true;
     this.error = false;
 
-    this.repartoS.validarGuiaControlCargue(data).subscribe((res:any) =>{
+    /*this.repartoS.validarGuiaControlCargue(data).subscribe((res:any) =>{
       this.validacion_guia= res;
 
       if(res.Descripcion ==''){
@@ -283,7 +292,27 @@ export class CrearControlCargueComponent implements OnInit {
       this.limpiarControles();
       alert("Error consultando guia")
       }
-    )
+    )*/
+
+    let guias_f :any[]=[];
+    guias_f =  this.guias.filter(x => x.Cons_GuiasU == this.forma.controls.txtConsGuiasU.value)[0];
+
+    if(guias_f ==undefined || guias_f.length==0){
+      this.tools.mensaje_ok('Guia ingresada');
+
+      this.guias.push(
+        { 
+          Cod_Regional: this.forma.controls.txtCodRegional.value, 
+          Cod_FormaPago: this.forma.controls.txtCodFormaPago.value,
+          Cons_GuiasU: this.forma.controls.txtConsGuiasU.value,
+          Des_EstadoG:"XX", 
+          Cod_EstadoG: 5, 
+          Con_CartaPorte: 0})
+    }
+    else{
+      this.tools.mensaje_error('Guia ' + this.forma.controls.txtCodRegional.value + '-' + this.forma.controls.txtCodFormaPago.value + '-' + this.forma.controls.txtConsGuiasU.value + ' ya estaba ingresada!')
+    }
+    this.limpiarControles();
   }
 
   eliminarGuia(index, guia){
@@ -338,11 +367,11 @@ export class CrearControlCargueComponent implements OnInit {
   }*/
 
   grabar(){
-
+    alert('Creando CC')
   }
 
   anular(){
-    
+    alert('Anulando')
   }
 
   nuevo(){
@@ -361,7 +390,6 @@ export class CrearControlCargueComponent implements OnInit {
     this.forma.controls.txtConsGuiasU.setValue('');
     this.myInputField.nativeElement.focus();
   }
-
 }
 
 /* consultarCC(){

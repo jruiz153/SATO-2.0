@@ -19,7 +19,12 @@ import { ControlRepartoComponent } from './control-reparto/control-reparto.compo
   ],
   exports:[
     CrearPlanillaRepartoComponent, 
-    ControlRepartoComponent
+    ControlRepartoComponent,
+    RepartoRoutingModule
   ]
 })
-export class RepartoModule { }
+export class RepartoModule { 
+  constructor(){
+    console.log('lrpm')
+  }
+}

@@ -32,19 +32,9 @@ export class MenuComponent implements OnInit {
       Nom_Opcion: opcion
     } 
     
-    this.userS.asignarOpcion(opcion);
     localStorage.setItem('opcion_activa', opcion);
-
-   /*  this.userS.consultarAccionesOpcionUsuario(data).subscribe(res=>{
-      this.acciones=res;
-      console.log("asigne")
-
-      localStorage.setItem('permisos', JSON.stringify(res));
-     }) */
-
-     //this.acciones= this.userS.consultarAccionesOpcionUsuario(this.auth.UsuarioEnviaNet,opcion);
-     //this.router.navigate(['/' + link]);
-     this.toggleSidenav.emit();
+    this.userS.asignarOpcion(opcion);
+    this.toggleSidenav.emit();
   }
 
 }

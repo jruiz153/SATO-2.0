@@ -1,12 +1,12 @@
-<mat-toolbar color="primary" style="min-height:52px" *ngIf="tools.estado_navbar">
+<mat-toolbar color="primary" style="min-height:52px;font-size: 13px;" *ngIf="tools.estado_navbar">
     <mat-toolbar-row>
         <button mat-icon-button>
             <mat-icon (click)="onToggleSidenav()">menu</mat-icon> <!-- toggleSidenav.emit() -->
         </button>
-        <h1>SATO web 3.0</h1>
-        <span></span>
-        <div>
-            <a mat-button [routerLink]="'/home'"> Versión 1.01 </a> {{ auth.fecha_sistema }}
+        <h1>SATO</h1>
+        <span>&nbsp;</span>
+        <div class="text-rigth">
+            Versión 1.01 &nbsp; {{ auth.fecha_sistema }}
         </div>
     </mat-toolbar-row>
 </mat-toolbar>

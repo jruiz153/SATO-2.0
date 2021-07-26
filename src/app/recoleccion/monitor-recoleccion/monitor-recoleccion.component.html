@@ -42,86 +42,91 @@
                 </div>
             </div>
         </div>
-        <app-loading *ngIf="cargando"></app-loading>
+        <app-loading *ngIf="cargandoPlanillas"></app-loading>
     </div>
-
 
     <div class="form-horizontal">
         <div class="form-group">
-            <div class="col-sm-12">
+            <div class="col-sm-4">
                 <div class="panel panel-default">
                     <div class="panel-body">
-
-                        <div class="form-group">
-
-                            <div class="col-sm-2 col-md-2 col-lg-2">
-                                <mat-form-field class="full-width">
-                                    <mat-label>Criterio fecha</mat-label>
-                                    <mat-select formControlName="drpEmbalaje" id="drpEmbalaje" autofocus>
-                                        <mat-option value="0">Menor o igual</mat-option>
-                                        <mat-option value="1">Igual</mat-option>
-                                        <mat-option value="2">Mayor o igual</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-
-                            <div class="col-sm-2 col-md-2 col-lg-2">
-                                <mat-form-field class="full-width">
-                                    <mat-label>Seleccione fecha</mat-label>
-                                    <input matInput [matDatepicker]="picker" formControlName="txtFecha">
-                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                    <mat-datepicker #picker></mat-datepicker>
-                                </mat-form-field>
-                            </div>
-
-                            <div class="col-sm-2 col-md-2 col-lg-2">
-                                <mat-form-field class="full-width">
-                                    <input #myCuenta type="txtCuenta" formControlName="txtCuenta" (change)="adicionarCuenta()" matInput placeholder="Cuenta">
-                                </mat-form-field>
-                            </div>
-
-                            <div class="col-sm-2 col-md-2 col-lg-2">
-                                <mat-form-field class="full-width" disabled>
-                                    <mat-label>Cuentas</mat-label>
-                                    <mat-select formControlName="drpCuentas" id="drpCuentas">
-                                        <mat-option>--Seleccione cuenta--</mat-option>
-                                        <mat-option *ngFor="let cuenta of cuentas" value="{{ cuenta.Cuenta }}"><i class="fas fa-truck"></i> &nbsp;{{ cuenta.Cuenta }}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-
-                            <div class="col-sm-2 col-md-2 col-lg-2">
-
-                                <section style="text-align: right;">
-                                    <mat-checkbox formControlName="chkClientesCelulares" id="chkClientesCelulares">Clientes celulares</mat-checkbox>
-
-                                </section>
-
-                            </div>
-                            <div class="col-sm-2 col-md-2 col-lg-2">
-                                <mat-radio-group>
-                                    <mat-radio-button value="incluir" style="padding: 8px;">Incluir</mat-radio-button>
-                                    <mat-radio-button value="excluir" style="padding: 8px;">Excluir</mat-radio-button>
-                                </mat-radio-group>
-                            </div>
-
+                        <div class="col-sm-6">
+                            <mat-form-field class="full-width">
+                                <mat-label>Criterio fecha</mat-label>
+                                <mat-select formControlName="drpEmbalaje" id="drpEmbalaje" autofocus>
+                                    <mat-option value="0">Menor o igual</mat-option>
+                                    <mat-option value="1">Igual</mat-option>
+                                    <mat-option value="2">Mayor o igual</mat-option>
+                                </mat-select>
+                            </mat-form-field>
                         </div>
 
+                        <div class="col-sm-6">
+                            <mat-form-field class="full-width">
+                                <mat-label>Seleccione fecha</mat-label>
+                                <input matInput [matDatepicker]="picker" formControlName="txtFecha">
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="col-sm-6">
+                            <mat-form-field class="full-width">
+                                <input #myCuenta type="txtCuenta" formControlName="txtCuenta" (change)="adicionarCuenta()" matInput placeholder="Cuenta">
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <mat-form-field class="full-width" disabled>
+                                <mat-label>Cuentas</mat-label>
+                                <mat-select formControlName="drpCuentas" id="drpCuentas">
+                                    <mat-option>--Seleccione cuenta--</mat-option>
+                                    <mat-option *ngFor="let cuenta of cuentas" value="{{ cuenta.Cuenta }}"><i class="fas fa-truck"></i> &nbsp;{{ cuenta.Cuenta }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="col-sm-6">
+                            <div class="col-sm-6">
+                                <section style="text-align: right;">
+                                    <mat-checkbox formControlName="chkClientesCelulares" id="chkClientesCelulares">Clientes celulares</mat-checkbox>
+                                </section>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <mat-form-field class="full-width">
+                                <mat-label>Acción</mat-label>
+                                <mat-select formControlName="drpAccion" id="drpAccion" autofocus>
+                                    <mat-option value="0">Incluir</mat-option>
+                                    <mat-option value="1">Excluir</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <app-loading *ngIf="cargando"></app-loading>
     </div>
 
-    <app-loading *ngIf="cargandoOSs"></app-loading>
     <!-- oss -->
     <div class="form-horizontal">
         <!-- *ngIf="guias.length > 0" -->
         <div class="form-group">
             <div class="col-sm-12 col-md-9 col-lg-9">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Ordenes de servicio planilla {{ planilla }}</div>
+                    <div class="panel-heading">Ordenes de servicio planilla {{ planilla }} ({{ oss.length }})</div>
                     <div class="panel-body text-center" style="overflow: scroll; height: 150px;">
                         <div class="col-sm-12">
                             <table class="tabla tabla-bordered" style="width:2500px;overflow: scroll;">
@@ -159,7 +164,7 @@
                                         <i class="fas fa-map-marker-alt" style="font-size: 14px;"></i>
                                         <mat-menu #appMenu #contextMenu2="matMenu">
                                             <ng-template matMenuContent let-item="pl">
-                                                <button *ngFor="let planilla of planillas" mat-menu-item (click)="asignarOSPlanilla(planilla.Num_PlanillaR)">{{planilla.Num_PlanillaR}} - {{planilla.Nom_Zona}}</button>
+                                                <button *ngFor="let planilla of planillas" mat-menu-item (click)="asignarOSPlanilla(planilla.Num_PlanillaR)">{{planilla.Nro_Placa}} - {{planilla.Num_PlanillaR}} - {{planilla.Nom_Zona}}</button>
                                             </ng-template>
                                         </mat-menu>
                                     </td>
@@ -223,13 +228,13 @@
             </div>
         </div>
     </div>
-    <app-loading *ngIf="cargandoPlanillas"></app-loading>
+    <app-loading *ngIf="cargandoOSs"></app-loading>
     <!-- planillas -->
     <div class="form-horizontal">
         <div class="form-group">
             <div class="col-sm-12 col-md-9 col-lg-9">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Planillas ({{ planillas.length }})</div>
+                    <div class="panel-heading">Planillas de Recolección ({{ planillas.length }})</div>
                     <div class="panel-body text-center" style="overflow: scroll; height: 200px; font-size:8px">
                         <div class="col-sm-12">
                             <table class="tabla tabla-bordered" style="width:100%;overflow: scroll;font-size:8px !important">
